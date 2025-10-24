@@ -7,6 +7,7 @@ public class FruitAI_RandomWalk : MonoBehaviour
     public float moveSpeed = 3f;             // Units per second
     public float directionChangeInterval = 2f; // Seconds between random direction changes
     public float minTargetDistance = 2f;
+    public fruitState myFruitState;
 
     private Vector3 targetPos;           // Current movement direction
     public float timer;
@@ -19,6 +20,10 @@ public class FruitAI_RandomWalk : MonoBehaviour
 
     void Update()
     {
+        if (!myFruitState.active)
+        {
+            return;
+        }
         // Move toward the target (X/Z only)
         Vector3 moveTarget = new Vector3(targetPos.x, transform.position.y, targetPos.z);
         transform.position = Vector3.MoveTowards(transform.position, moveTarget, moveSpeed * Time.deltaTime);
@@ -46,7 +51,7 @@ public class FruitAI_RandomWalk : MonoBehaviour
         do
         {
             float randomX = Random.Range(FruitManager.Instance.transform.position.x, FruitManager.Instance.transform.position.x + FruitManager.Instance.playAreaLength);
-        float randomZ = Random.Range(FruitManager.Instance.transform.position.z, FruitManager.Instance.transform.position.z + FruitManager.Instance.playAreaWidth);
+            float randomZ = Random.Range(FruitManager.Instance.transform.position.z, FruitManager.Instance.transform.position.z + FruitManager.Instance.playAreaWidth);
             newTarget = new Vector3(randomX, transform.position.y, randomZ);
             attempts++;
             // Safety: avoid infinite loop
