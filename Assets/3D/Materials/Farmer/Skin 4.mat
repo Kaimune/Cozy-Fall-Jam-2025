@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ToonGrass
-  m_Shader: {fileID: -6465566751694194690, guid: eafb433509e05f343b2b1067717eb4ea, type: 3}
+  m_Name: Skin 4
+  m_Shader: {fileID: -6465566751694194690, guid: 2753d56cee62e1e4c815b7d92a3a0328, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -66,7 +66,6 @@ Material:
     m_Ints: []
     m_Floats:
     - ADDITIONAL_LIGHTS: 1
-    - _AffectDistance: 1.7
     - _AlphaClip: 0
     - _AlphaClipThreshold: 0.5
     - _AlphaToMask: 0
@@ -80,20 +79,14 @@ Material:
     - _LIGHTMAP_SHADOW_MIXING: 0
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Rotation: 0.88
     - _SPECULAR: 0
     - _Smoothness: 0.5
     - _SrcBlend: 1
     - _Surface: 0
-    - _WindSpeed: 0.16
-    - _WindStrength: 2.9
     - _ZTest: 4
     - _ZWrite: 1
     - _ZWriteControl: 0
     m_Colors:
-    - _Bottom: {r: 0.63522005, g: 0.50800693, b: 0.15381108, a: 0}
-    - _DiffuseColor: {r: 0.7142569, g: 0.76729554, b: 0.23404916, a: 1}
-    - _Pos: {r: 0, g: 0, b: 0, a: 0}
-    - _SpecularColour: {r: 1, g: 1, b: 1, a: 1}
-    - _Top: {r: 0.9559748, g: 0.7818354, b: 0.59222335, a: 0}
+    - _DiffuseColor: {r: 0.49685526, g: 0.29576054, b: 0.18905492, a: 1}
+    - _SpecularColour: {r: 1, g: 0.11635202, b: 0.11635202, a: 1}
   m_BuildTextureStacks: []
