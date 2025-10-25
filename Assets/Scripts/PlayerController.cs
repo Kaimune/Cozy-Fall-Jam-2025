@@ -173,10 +173,24 @@ public class PlayerController : MonoBehaviour
     #region Collision
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Fruit") && !collidingFruits.Contains(other.gameObject) && other.gameObject.GetComponent<fruitState>().active)
+        if (other.CompareTag("Fruit") && !collidingFruits.Contains(other.gameObject))
         {
-            collidingFruits.Add(other.gameObject);
-            UpdateIndicator();
+            var fruitState = other.gameObject.GetComponent<fruitState>();
+            var bombScript = other.gameObject.GetComponent<FruitAI_Bomb>();
+
+            if (bombScript != null && bombScript.isThrown && bombScript.launcher!= gameObject)
+            {
+                // Call the function on the thrown bomb instead of picking up
+                ApplyStun(stunDuration);
+                DropAllFruit();
+                Debug.Log(gameObject.name + " got hit");
+                bombScript.Blast(); // Example function in FruitAI_Bomb             
+            }
+            else if (fruitState != null && fruitState.active)
+            {
+                collidingFruits.Add(other.gameObject);
+                UpdateIndicator();
+            }
         }
 
         if (other.CompareTag("DropOff"))
@@ -291,6 +305,37 @@ public class PlayerController : MonoBehaviour
     #region Punch Interaction
     private void AttemptPunch()
     {
+        GameObject bombFruit = collectedFruits.Find(f => f != null && f.GetComponent<FruitAI_Bomb>() != null);
+        if (bombFruit != null)
+        {
+            // Remove from collected list
+            collectedFruits.Remove(bombFruit);
+            for (int i = 0; i < collectedFruits.Count; i++)
+            {
+                GameObject fruit = collectedFruits[i];
+                if (fruit != null)
+                {
+                    float newY = baseHeight + i * heightIncrement;
+                    fruit.transform.localPosition = new Vector3(0, newY, 0);
+                }
+            }
+
+            // Call the bomb's throw function, pass in player's forward direction
+            FruitAI_Bomb bombScript = bombFruit.GetComponent<FruitAI_Bomb>();
+            if (bombScript != null)
+            {
+                bombFruit.transform.SetParent(null);
+                Vector3 throwDir = PlayerTransform.forward; // current facing direction
+                bombScript.Throw(throwDir);
+                //bombScript.myFruitState.active = true;
+                bombScript.launcher = gameObject;
+            }
+
+            UpdateIndicator(); // update indicator since a fruit was used
+            return; // skip normal punch
+        }
+
+
         foreach (GameObject otherPlayer in collidingPlayers)
         {
             if (otherPlayer == null) continue;
@@ -312,5 +357,33 @@ public class PlayerController : MonoBehaviour
         isStunned = true;
         stunTimer = duration;
     }
-#endregion
+
+    public void DropAllFruit()
+    {
+        foreach (GameObject fruit in collectedFruits)
+        {
+            if (fruit != null)
+            {
+                // Detach from player
+                fruit.transform.SetParent(null);
+
+                // Reset position Y to 0.5 (keep current X/Z)
+                Vector3 pos = fruit.transform.position;
+                fruit.transform.position = new Vector3(pos.x, 0.5f, pos.z);
+
+                // Reactivate fruit if it has a fruitState
+                var fruitState = fruit.GetComponent<fruitState>();
+                if (fruitState != null)
+                    fruitState.active = true;
+
+                // Add back to ActiveFruit list
+                if (!FruitManager.Instance.ActiveFruit.Contains(fruit))
+                    FruitManager.Instance.ActiveFruit.Add(fruit);
+            }
+        }
+
+        collectedFruits.Clear();
+        UpdateIndicator();
+    }
+    #endregion
 }

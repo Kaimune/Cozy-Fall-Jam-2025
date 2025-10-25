@@ -6,5 +6,4 @@ public class fruitState : MonoBehaviour
 {
     public bool active = true;
     public float fruitValue;
-
 }
