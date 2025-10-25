@@ -14,6 +14,10 @@ public class CameraManager : MonoBehaviour
     public Vector3 CameraRotaion = new Vector3(30f, 30f, 0f); // Default top-down offset
     public float smoothSpeed = 5f; // How smoothly the camera moves
 
+    public float minSize = 5f;      // Minimum orthographic size
+    public float maxSize = 15f;     // Maximum orthographic size
+    public float zoomFactor = 0.5f; // How much zoom changes based on distance
+
     void LateUpdate()
     {
         if (player1 == null || player2 == null)
@@ -29,10 +33,13 @@ public class CameraManager : MonoBehaviour
             middlePoint.z + offset.z
         );
         Transform CameraTransform = Camera.GetComponent<Transform>();
-        // Smooth follow (or just snap if you prefer)
+        // Smooth follow
         CameraTransform.position = Vector3.Lerp(CameraTransform.position, desiredPosition, smoothSpeed * Time.deltaTime);
-
-        // Optional: keep camera rotation fixed
         CameraTransform.rotation = Quaternion.Euler(CameraRotaion);
+
+        Camera cam = Camera.GetComponent<Camera>();
+        float distance = Vector3.Distance(player1.position, player2.position);
+        float targetSize = Mathf.Clamp(minSize + distance * zoomFactor, minSize, maxSize);
+        cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, targetSize, Time.deltaTime * smoothSpeed);
     }
 }

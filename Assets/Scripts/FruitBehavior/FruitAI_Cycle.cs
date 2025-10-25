@@ -47,7 +47,7 @@ public class FruitAI_Cycle : MonoBehaviour
         if (FruitManager.Instance == null) return;
 
         // Orbit angle update
-        float deltaAngle = (orbitSpeed*360) * Time.deltaTime;
+        float deltaAngle = ((orbitSpeed*360)*FruitManager.Instance.globalSpeed)* Time.deltaTime;
         currentAngle += clockwise ? deltaAngle : -deltaAngle;
         float rad = currentAngle * Mathf.Deg2Rad;
 

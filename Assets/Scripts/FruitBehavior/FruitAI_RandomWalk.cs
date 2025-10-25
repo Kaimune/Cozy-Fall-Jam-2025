@@ -26,7 +26,7 @@ public class FruitAI_RandomWalk : MonoBehaviour
         }
         // Move toward the target (X/Z only)
         Vector3 moveTarget = new Vector3(targetPos.x, transform.position.y, targetPos.z);
-        transform.position = Vector3.MoveTowards(transform.position, moveTarget, moveSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, moveTarget, (moveSpeed*FruitManager.Instance.globalSpeed) * Time.deltaTime);
 
         // Clamp inside play area
         ClampPosition();

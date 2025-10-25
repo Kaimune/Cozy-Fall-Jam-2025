@@ -14,6 +14,9 @@ public class FruitManager : MonoBehaviour
     public float playAreaLength = 10f;   // Size along X
     public float playAreaWidth = 10f;    // Size along Z
     public float spawnHeight = 0f;
+    public float spawnintervel = 5f;
+
+    public float globalSpeed = 1f;
 
     public GameObject[] obstacles; // assign in inspector
 
@@ -58,7 +61,27 @@ public class FruitManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            FruitSpawner(); // Spawn a random fruit when pressing Space
+            //FruitSpawner(); // Spawn a random fruit when pressing Space
+        }
+    }
+
+    private void Start()
+    {
+        StartCoroutine(FruitSpawnRoutine());
+    }
+
+    private IEnumerator FruitSpawnRoutine()
+    {
+        while (true)
+        {
+            // Wait 10 seconds between checks
+            yield return new WaitForSeconds(spawnintervel);
+
+            // Only spawn if there are fewer than 5 active fruits
+            if (ActiveFruit.Count < 5)
+            {
+                FruitSpawner();
+            }
         }
     }
 
@@ -71,7 +94,7 @@ public class FruitManager : MonoBehaviour
         }
 
         // Pick a random prefab
-        GameObject randomFruit = fruitPrefabs[Random.Range(0, fruitPrefabs.Count)];
+        GameObject randomFruit = UnlockedFruit[Random.Range(0, UnlockedFruit.Count)];
 
         // Calculate random position within the play area
         Vector3 startPos = transform.position; // Play area starts at this object

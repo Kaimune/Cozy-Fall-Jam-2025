@@ -65,7 +65,7 @@ public class FruitAI_Flee : MonoBehaviour
         Vector3 moveDir = (fleeDirection * fleeStrength + toCenter.normalized * centerForceStrength).normalized;
 
         // Move fruit
-        transform.Translate(moveDir * moveSpeed * Time.deltaTime, Space.World);
+        transform.Translate(moveDir * (moveSpeed*FruitManager.Instance.globalSpeed) * Time.deltaTime, Space.World);
 
         // Clamp to play area and avoid obstacles
         transform.position = PlayAreaUtils.ClampPosition(transform.position, FruitManager.Instance.obstacles, edgeBuffer);

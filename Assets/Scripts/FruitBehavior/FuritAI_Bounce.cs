@@ -21,7 +21,7 @@ public class FuritAI_Bounce : MonoBehaviour
             return;
         }
         // Move in current direction (X/Z only)
-        Vector3 newPos = transform.position + moveDirection * moveSpeed * Time.deltaTime;
+        Vector3 newPos = transform.position + moveDirection * (moveSpeed*FruitManager.Instance.globalSpeed) * Time.deltaTime;
         newPos.y = transform.position.y; // Lock Y
         transform.position = newPos;
 
