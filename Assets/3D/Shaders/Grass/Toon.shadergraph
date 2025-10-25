@@ -6364,8 +6364,8 @@
     "m_ObjectId": "b57f5ced9e504dc8bc6cdb49b3744685",
     "m_Title": "Culling Mask",
     "m_Position": {
-        "x": -979.0,
-        "y": -262.0
+        "x": -972.6666259765625,
+        "y": -272.6666564941406
     }
 }
 
@@ -8607,10 +8607,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -953.9999389648438,
-            "y": -202.9999542236328,
-            "width": 125.9998779296875,
-            "height": 117.9999771118164
+            "x": -947.3333129882813,
+            "y": -214.0,
+            "width": 127.33331298828125,
+            "height": 120.0
         }
     },
     "m_Slots": [
@@ -8719,7 +8719,7 @@
         "m_Id": "e4591dfb4c7b4cf996aca4afb8a02e5d"
     },
     "m_AllowMaterialOverride": true,
-    "m_SurfaceType": 0,
+    "m_SurfaceType": 1,
     "m_ZTestMode": 4,
     "m_ZWriteControl": 0,
     "m_AlphaMode": 0,
