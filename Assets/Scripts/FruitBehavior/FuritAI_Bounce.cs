@@ -6,6 +6,8 @@ public class FuritAI_Bounce : MonoBehaviour
 {
     public float moveSpeed = 3f;          // Units per second
     private Vector3 moveDirection;        // Current direction in X/Z
+    public fruitState myFruitState;
+
 
     void Start()
     {
@@ -14,6 +16,10 @@ public class FuritAI_Bounce : MonoBehaviour
 
     void Update()
     {
+        if (!myFruitState.active)
+        {
+            return;
+        }
         // Move in current direction (X/Z only)
         Vector3 newPos = transform.position + moveDirection * moveSpeed * Time.deltaTime;
         newPos.y = transform.position.y; // Lock Y

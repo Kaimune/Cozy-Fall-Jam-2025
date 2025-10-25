@@ -19,6 +19,8 @@ public class FruitAI_Cycle : MonoBehaviour
     private Vector3 targetCenter;            // Next center to move toward
     private float timer;
     private float currentAngle;
+    public fruitState myFruitState;
+
 
     void Start()
     {
@@ -37,6 +39,11 @@ public class FruitAI_Cycle : MonoBehaviour
 
     void Update()
     {
+        if (!myFruitState.active)
+        {
+            return;
+        }
+
         if (FruitManager.Instance == null) return;
 
         // Orbit angle update

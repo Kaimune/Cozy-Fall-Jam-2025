@@ -10,9 +10,14 @@ public class FruitAI_Flee : MonoBehaviour
     public float edgeBuffer = 1f;           // distance from edges
     public float centerPullBase = 1f;       // base centering force
     public float centerPullExponent = 2f;   // exponential scaling
+    public fruitState myFruitState;
 
     void Update()
     {
+        if (!myFruitState.active)
+        {
+            return;
+        }
         if (FruitManager.Instance.Players.Length == 0) return;
 
         GameObject closestPlayer = null;
