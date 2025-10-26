@@ -54,8 +54,7 @@ public class FruitAI_Flee : MonoBehaviour
         fleeDirection = Quaternion.Euler(0, angle, 0) * fleeDirection;
 
         // Centering force (scaled exponentially)
-        Vector3 playAreaCenter = FruitManager.Instance.transform.position +
-                                 new Vector3(FruitManager.Instance.playAreaLength, 0, FruitManager.Instance.playAreaWidth) * 0.5f;
+        Vector3 playAreaCenter = myFruitState.spawnLocation;
         Vector3 toCenter = playAreaCenter - transform.position;
         toCenter.y = 0;
         float normalizedDistance = Mathf.Clamp01(closestDistance / targetDistance);

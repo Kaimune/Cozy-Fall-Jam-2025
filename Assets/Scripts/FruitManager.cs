@@ -105,6 +105,11 @@ public class FruitManager : MonoBehaviour
 
         // Spawn the fruit
         GameObject fruit = Instantiate(randomFruit, spawnPos, Quaternion.identity);
+        if (fruit.GetComponent<fruitState>()!= null)
+        {
+            fruit.GetComponent<fruitState>().active = true;
+            fruit.GetComponent<fruitState>().spawnLocation = spawnPos;
+        }
         ActiveFruit.Add(fruit);
 
         // Optionally parent it

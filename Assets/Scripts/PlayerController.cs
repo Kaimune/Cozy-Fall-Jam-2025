@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     public float stunDuration = 2f;
     public float PunchCooldown = 0.5f;
 
+    public bool isMoving;
     private float lastPunchTime = -Mathf.Infinity; // tracks cooldown
     private bool isStunned = false;    // currently stunned?
     private float stunTimer = 0f;
@@ -33,6 +34,7 @@ public class PlayerController : MonoBehaviour
     private Transform currentMarker;
     private bool inDropOffZone = false;
     private List<GameObject> collidingPlayers = new List<GameObject>();
+    public PlayerAnimator myAnimator;
 
     private void Start()
     {
@@ -78,6 +80,7 @@ public class PlayerController : MonoBehaviour
             PlayerTransform.position = Vector3.MoveTowards(PlayerTransform.position, targetPos, currentMoveSpeed * Time.deltaTime);
             PlayerTransform.position = PlayAreaUtils.ClampPosition(PlayerTransform.position, FruitManager.Instance.obstacles);
             Vector3 moveDir = targetPos - PlayerTransform.position;
+            isMoving = moveDir.sqrMagnitude > 0.001f;
             if (moveDir.sqrMagnitude > 0.001f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(moveDir);
@@ -140,6 +143,7 @@ public class PlayerController : MonoBehaviour
         float currentMoveSpeed = moveSpeed - (0.1f * fruitCount);
         currentMoveSpeed = Mathf.Max(currentMoveSpeed, moveSpeed * 0.5f);
         currentMoveSpeed = currentMoveSpeed * FruitManager.Instance.globalSpeed;
+        isMoving = inputDir != Vector3.zero;
         if (inputDir != Vector3.zero && PlayerTransform != null)
         {
             Vector3 targetPos = PlayerTransform.position + inputDir * currentMoveSpeed * Time.deltaTime;
@@ -306,6 +310,7 @@ public class PlayerController : MonoBehaviour
     private void AttemptPunch()
     {
         GameObject bombFruit = collectedFruits.Find(f => f != null && f.GetComponent<FruitAI_Bomb>() != null);
+        myAnimator.PunchAnimation();
         if (bombFruit != null)
         {
             // Remove from collected list
@@ -355,6 +360,7 @@ public class PlayerController : MonoBehaviour
     public void ApplyStun(float duration)
     {
         isStunned = true;
+        myAnimator.StunAnimation(duration);
         stunTimer = duration;
     }
 
