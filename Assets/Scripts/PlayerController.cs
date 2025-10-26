@@ -32,8 +32,8 @@ public class PlayerController : MonoBehaviour
     private bool isStunned = false;    // currently stunned?
     private float stunTimer = 0f;
 
-    [HideInInspector] public List<GameObject> collidingFruits = new List<GameObject>();
-    private List<GameObject> collectedFruits = new List<GameObject>();
+    public List<GameObject> collidingFruits = new List<GameObject>();
+    public List<GameObject> collectedFruits = new List<GameObject>();
     private Transform currentMarker;
     private bool inDropOffZone = false;
     private List<GameObject> collidingPlayers = new List<GameObject>();
@@ -292,6 +292,11 @@ public class PlayerController : MonoBehaviour
             collidingFruits.Add(other.gameObject);
             UpdateIndicator();
         }
+        else
+        {
+            collidingFruits.Remove(other.gameObject);
+            UpdateIndicator();
+        }
     }
 
     private void UpdateIndicator()
@@ -329,7 +334,6 @@ public class PlayerController : MonoBehaviour
             var fruitState = firstFruit.GetComponent<fruitState>();
             if (fruitState != null)
                 fruitState.active = false;
-
             // Attach fruit and stack
             firstFruit.transform.SetParent(transform);
             float newY = baseHeight + collectedFruits.Count * heightIncrement;
@@ -337,7 +341,16 @@ public class PlayerController : MonoBehaviour
             FruitManager.Instance.ActiveFruit.Remove(firstFruit);
             collectedFruits.Add(firstFruit);
             mySound.PlaySound(0);
-            collidingFruits.RemoveAt(0);
+            for (int i = 0; i < FruitManager.Instance.Players.Length; i++)
+            {
+                if (FruitManager.Instance.Players[i] != null)
+                {
+                    FruitManager.Instance.Players[i].GetComponent<PlayerController>().collidingFruits.Remove(firstFruit);
+                    FruitManager.Instance.Players[i].GetComponent<PlayerController>().UpdateIndicator();
+                }
+
+            }
+            //collidingFruits.RemoveAt(0);
             UpdateIndicator();
         }
     }
