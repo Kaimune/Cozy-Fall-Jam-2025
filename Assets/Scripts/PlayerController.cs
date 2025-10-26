@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public float PunchCooldown = 0.5f;
 
     public bool isMoving;
+    public bool active = true;
     private float lastPunchTime = -Mathf.Infinity; // tracks cooldown
     private bool isStunned = false;    // currently stunned?
     private float stunTimer = 0f;
@@ -50,6 +51,10 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if(!active)
+        {
+            return;
+        }
         if (isStunned)
         {
             stunTimer -= Time.deltaTime;

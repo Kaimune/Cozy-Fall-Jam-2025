@@ -84,9 +84,13 @@ public class FruitManager : MonoBehaviour
             }
         }
     }
-
+    public bool GameEnd;
     public void FruitSpawner()
     {
+        if(GameEnd)
+        {
+            return;
+        }
         if (UnlockedFruit == null || UnlockedFruit.Count == 0)
         {
             Debug.LogWarning(" No fruit prefabs assigned!");
@@ -119,5 +123,22 @@ public class FruitManager : MonoBehaviour
         }
 
         fruit.name = $"Fruit_{randomFruit.name}_{Time.frameCount}";
+    }
+
+    public void GameEnding()
+    {
+        GameEnd = true;
+        for (int i = 0; i < ActiveFruit.Count; i++)
+        {
+            if (ActiveFruit[i] != null)
+                Destroy(ActiveFruit[i]);
+        }
+        ActiveFruit.Clear();
+
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (Players[i] != null)
+                Players[i].GetComponent<PlayerController>().active = false;
+        }
     }
 }

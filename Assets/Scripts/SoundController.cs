@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 using TMPro;
 
 public class SoundController : MonoBehaviour
@@ -8,6 +9,9 @@ public class SoundController : MonoBehaviour
     public List<GameObject> PlayerInZone;
     public GameObject ChangeIndicator;
     public TextMeshPro VolunmDisplay;
+    public float pitchIncrease = 0.1f;   // How much to increase each time
+    public float maxPitch = 2f;          // Prevents extreme speed-up
+    public float transitionDuration = 0.5f; // Smooth transition time
     public static SoundController Instance { get; private set; }
 
     public float masterVolume = 0.5f;
@@ -64,5 +68,21 @@ public class SoundController : MonoBehaviour
             if (src != null)
                 src.volume = masterVolume;
         }
+    }
+
+    public void SpeedUpMusic()
+    {
+        if (audioSources[0] == null) return;
+
+        // Target pitch (clamped so it doesn't go above maxPitch)
+        float targetPitch = Mathf.Clamp(audioSources[0].pitch + pitchIncrease, 0.1f, maxPitch);
+
+        // Kill any previous tween on this AudioSource¡¯s pitch (prevent overlap)
+        DOTween.Kill(audioSources[0]);
+
+        // Smoothly tween the pitch
+        DOTween.To(() => audioSources[0].pitch, x => audioSources[0].pitch = x, targetPitch, transitionDuration)
+            .SetEase(Ease.OutSine)
+            .SetTarget(audioSources[0]); // So Kill() knows what to stop next time
     }
 }
