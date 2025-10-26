@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundLayer = Physics.DefaultRaycastLayers;
     public GameObject indicator;             // Assign in inspector
     public GameObject myDropOff;             // Drop-off assigned to this player
+    public ParticleSystem moneyPartical; // assign in inspector
+    public ParticleSystem movingPartical; // assign in inspector
 
     [Header("Fruit Settings")]
     public float baseHeight = 2f;
@@ -35,6 +37,10 @@ public class PlayerController : MonoBehaviour
     private bool inDropOffZone = false;
     private List<GameObject> collidingPlayers = new List<GameObject>();
     public PlayerAnimator myAnimator;
+    public PlayerSound mySound; //1=pick up 2=drop off 3=Got hit
+
+    public bool inRadioZone = false;
+    private GameObject currentRadio;
 
     private void Start()
     {
@@ -65,6 +71,10 @@ public class PlayerController : MonoBehaviour
             HandleKeyboardMovement();
             HandleKeyboardInput();
         }
+
+        var emission = movingPartical.emission;
+        emission.enabled = isMoving;
+
     }
 
     #region Mouse Controls
@@ -107,10 +117,20 @@ public class PlayerController : MonoBehaviour
                 dropOffFruit();
         }
 
+        if (Input.GetMouseButtonDown(0) && inRadioZone)
+        {
+            SoundController.Instance.ChangeVolume(false);
+        }
+
         if (Input.GetMouseButtonDown(1) && Time.time - lastPunchTime >= PunchCooldown)
         {
             AttemptPunch();
             lastPunchTime = Time.time;
+        }
+
+        if (Input.GetMouseButtonDown(1) && inRadioZone)
+        {
+            SoundController.Instance.ChangeVolume(true);
         }
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -166,10 +186,21 @@ public class PlayerController : MonoBehaviour
                 dropOffFruit();
         }
 
+        if (Input.GetKeyDown(KeyCode.J)&&inRadioZone)
+        {
+            SoundController.Instance.ChangeVolume(false);
+        }
+
+
         if (Input.GetKeyDown(KeyCode.K) && Time.time - lastPunchTime >= PunchCooldown)
         {
             AttemptPunch();
             lastPunchTime = Time.time;
+        }
+
+        if (Input.GetKeyDown(KeyCode.K) && inRadioZone)
+        {
+            SoundController.Instance.ChangeVolume(true);
         }
     }
     #endregion
@@ -206,6 +237,17 @@ public class PlayerController : MonoBehaviour
                 UpdateIndicator();
             }
         }
+
+        if (other.CompareTag("Radio"))
+        {
+            inRadioZone = true;
+            if (!SoundController.Instance.PlayerInZone.Contains(gameObject))
+            {
+                SoundController.Instance.PlayerInZone.Add(gameObject);               
+            }
+            SoundController.Instance.UpdateChangeIndicator();
+            currentRadio = other.gameObject;
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -224,6 +266,17 @@ public class PlayerController : MonoBehaviour
                 inDropOffZone = false;
                 UpdateIndicator();
             }
+        }
+
+        if (other.CompareTag("Radio"))
+        {
+            inRadioZone = false;
+            if (SoundController.Instance.PlayerInZone.Contains(gameObject))
+            {
+                SoundController.Instance.PlayerInZone.Remove(gameObject);
+            }
+            SoundController.Instance.UpdateChangeIndicator();
+            currentRadio = null;
         }
     }
 
@@ -278,6 +331,7 @@ public class PlayerController : MonoBehaviour
             firstFruit.transform.localPosition = new Vector3(0, newY, 0);
             FruitManager.Instance.ActiveFruit.Remove(firstFruit);
             collectedFruits.Add(firstFruit);
+            mySound.PlaySound(0);
             collidingFruits.RemoveAt(0);
             UpdateIndicator();
         }
@@ -295,7 +349,9 @@ public class PlayerController : MonoBehaviour
             if (fruit != null)
             {
                 dropZone.myScore += fruit.GetComponent<fruitState>().fruitValue;
+                mySound.PlaySound(1);
                 Destroy(fruit);
+                moneyPartical.Emit(3); // play the particle system once
                 dropZone.UpdateScore();
             }
         }
@@ -361,6 +417,7 @@ public class PlayerController : MonoBehaviour
     {
         isStunned = true;
         myAnimator.StunAnimation(duration);
+        mySound.PlaySound(2);
         stunTimer = duration;
     }
 
